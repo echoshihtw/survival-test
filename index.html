@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Awareness — How long can you survive?</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -202,8 +203,8 @@
       border-radius: 10px;
       padding: 0.75rem 1rem;
     }
-    .stat-label { font-size: 10px; letter-spacing: 1px; color: #2A3D5A; margin-bottom: 4px; }
-    .stat-val { font-size: 15px; font-weight: 600; font-family: 'Courier New', monospace; color: #CDD5E0; }
+    .stat-label { font-size: 10px; letter-spacing: 0.5px; color: #2A3D5A; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .stat-val { font-size: 13px; font-weight: 600; font-family: 'Courier New', monospace; color: #CDD5E0; word-break: break-word; overflow-wrap: break-word; }
 
     /* ── EMAIL CAPTURE (post-result) ── */
     .capture-card {
@@ -217,9 +218,10 @@
     }
     .capture-title { font-size: 15px; font-weight: 600; color: #F0F0F5; margin-bottom: 0.4rem; }
     .capture-sub { font-size: 12px; color: #6B7F96; margin-bottom: 1rem; line-height: 1.5; }
-    .email-row { display: flex; gap: 8px; }
+    .email-row { display: flex; gap: 8px; width: 100%; }
     .email-input {
       flex: 1;
+      min-width: 0;
       padding: 11px 14px;
       background: #08172E;
       border: 1px solid #0D1F3A;
@@ -231,12 +233,13 @@
     .email-input:focus { border-color: #8FDDAA; }
     .email-input::placeholder { color: #2A3D5A; }
     .email-btn {
-      padding: 11px 18px;
+      flex-shrink: 0;
+      padding: 11px 14px;
       background: #8FDDAA;
       color: #040D1A;
       border: none;
       border-radius: 10px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       cursor: pointer;
       white-space: nowrap;
@@ -364,6 +367,45 @@
   </div>
 
 
+  <!-- Hidden Share Card — 9:16 ratio (360×640 → 1080×1920 at scale 3) -->
+  <div id="share-card" style="
+    position:fixed;left:-9999px;top:0;
+    width:360px;height:640px;
+    background:#060F1E;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    display:flex;flex-direction:column;align-items:center;
+    padding:44px 32px 40px;box-sizing:border-box;
+  ">
+    <div style="font-size:13px;color:#3A5270;letter-spacing:0.3px;text-align:center;">
+      If my income stopped today…
+    </div>
+
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;">
+      <div id="sc-days" style="font-size:100px;font-weight:700;font-family:'Courier New',monospace;line-height:1;color:#8FDDAA;">—</div>
+      <div style="font-size:11px;letter-spacing:3px;color:#3A5270;">DAYS LEFT</div>
+    </div>
+
+    <div id="sc-badge-wrap" style="
+      border:1px solid rgba(143,221,170,0.25);
+      background:rgba(143,221,170,0.08);
+      border-radius:20px;
+      padding:18px 24px;
+      width:100%;text-align:center;
+    ">
+      <span id="sc-emoji" style="font-size:34px;display:block;margin-bottom:6px;">🐣</span>
+      <div id="sc-name" style="font-size:19px;font-weight:700;color:#F0F0F5;margin-bottom:4px;letter-spacing:-0.3px;"></div>
+      <div id="sc-desc" style="font-size:13px;color:#6B7F96;line-height:1.4;"></div>
+    </div>
+
+    <div style="flex:0.6;display:flex;align-items:center;">
+      <div id="sc-pct" style="font-size:14px;color:#CDD5E0;text-align:center;"></div>
+    </div>
+
+    <div style="font-size:10px;color:#2A3D5A;letter-spacing:1.5px;text-align:center;">
+      WHAT'S YOURS?&nbsp;&nbsp;·&nbsp;&nbsp;AWARENESS.APP
+    </div>
+  </div>
+
   <!-- Firebase -->
   <script type="module">
     import { initializeApp }   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
@@ -432,7 +474,7 @@
         'cap-success':   "You're on the list. We'll reach out soon.",
         'btn-share':     'SHARE MY RESULT',
         'btn-recalc':    'RECALCULATE',
-        shareText:       (days, badge) => `I have ${days} days of financial runway — "${badge}". How long can you survive? → awareness.app`,
+        shareText:       (days, badge, emoji) => `If my income stopped today, I'd have ${days} days. ${emoji} ${badge}. What's yours? → awareness.app`,
         copied:          'Copied to clipboard!',
         dateLocale:      'en',
       },
@@ -465,7 +507,7 @@
         'cap-success':   '你已加入名單，我們將盡快與你聯繫。',
         'btn-share':     '分享我的結果',
         'btn-recalc':    '重新計算',
-        shareText:       (days, badge) => `我有 ${days} 天的財務生存期 —「${badge}」。你能撐多久？→ awareness.app`,
+        shareText:       (days, badge, emoji) => `如果今天收入中斷，我還有 ${days} 天。${emoji}「${badge}」。你的呢？→ awareness.app`,
         copied:          '已複製到剪貼板！',
         dateLocale:      'zh-TW',
       },
@@ -503,86 +545,132 @@
     applyLang(currentLang);
 
     const badges = [
-      { max: 30,    emoji:'🔴', name:'Survival Mode',      nameZh:'生存模式', desc:'Every day counts. Time to act.',      descZh:'每一天都很重要，是時候行動了。', pct:5,  color:'#E8829E' },
-      { max: 90,    emoji:'🐣', name:'Financial Rookie',   nameZh:'財務新手', desc:"You're just getting started.",         descZh:'你才剛剛起步。',               pct:20, color:'#E8829E' },
-      { max: 180,   emoji:'🌊', name:'Getting By',         nameZh:'勉強度日', desc:'Staying afloat, but barely.',          descZh:'勉強維持，但差強人意。',       pct:40, color:'#CB9A3E' },
-      { max: 365,   emoji:'🌿', name:'Financially Stable', nameZh:'財務穩定', desc:'You have breathing room.',             descZh:'你有一些緩衝空間。',           pct:65, color:'#8FDDAA' },
-      { max: 730,   emoji:'🏰', name:'Financial Fortress', nameZh:'財務堡壘', desc:'Strong position. Well done.',          descZh:'強勢地位，幹得好。',           pct:85, color:'#8FDDAA' },
-      { max: 99999, emoji:'🚀', name:'Escape Velocity',    nameZh:'財務自由', desc:"You've cracked the code.",             descZh:'你已突破財務限制。',           pct:97, color:'#8FDDAA' },
+      { max: 30,    emoji:'🔴', name:'Survival Mode',      desc:'Every day counts. Time to act.',      pct:5,  color:'#E8829E' },
+      { max: 90,    emoji:'🐣', name:'Financial Rookie',   desc:"You're just getting started.",         pct:20, color:'#E8829E' },
+      { max: 180,   emoji:'🌊', name:'Getting By',         desc:'Staying afloat, but barely.',          pct:40, color:'#CB9A3E' },
+      { max: 365,   emoji:'🌿', name:'Financially Stable', desc:'You have breathing room.',             pct:65, color:'#8FDDAA' },
+      { max: 730,   emoji:'🏰', name:'Financial Fortress', desc:'Strong position. Well done.',          pct:85, color:'#8FDDAA' },
+      { max: 99999, emoji:'🚀', name:'Escape Velocity',    desc:"You've cracked the code.",             pct:97, color:'#8FDDAA' },
     ];
-
-    const fmt  = n => '$' + Math.round(n).toLocaleString();
-    const fmtN = n => Math.round(n).toLocaleString();
-
+ 
+    const fmt    = n => '$' + Math.round(n).toLocaleString();
+    const fmtN   = n => Math.round(n).toLocaleString();
+ 
     function go(from, to) {
       document.getElementById(from).classList.remove('active');
       document.getElementById(to).classList.add('active');
     }
-
+ 
     function fv(sliderId, labelId) {
       document.getElementById(labelId).textContent =
         fmt(document.getElementById(sliderId).value);
     }
-
+ 
     function calcAndShow() {
-      const cash   = +document.getElementById('cash').value;
-      const spend  = +document.getElementById('spend').value;
-      const debt   = +document.getElementById('debt').value;
-      const subs   = +document.getElementById('subs').value;
-      const burn   = spend + debt + subs;
-      const days   = burn > 0 ? Math.floor((cash / burn) * 30) : 99999;
+      const cash  = +document.getElementById('cash').value;
+      const spend = +document.getElementById('spend').value;
+      const debt  = +document.getElementById('debt').value;
+      const subs  = +document.getElementById('subs').value;
+      const burn  = spend + debt + subs;
+      const days  = burn > 0 ? Math.floor((cash / burn) * 30) : 99999;
       const months = burn > 0 ? (cash / burn) : 99999;
-      const badge  = badges.find(b => days < b.max) || badges[0];
-
-      const dateLocale = i18n[currentLang].dateLocale;
+      const badge = badges.find(b => days < b.max) || badges[0];
+ 
+      // Run out date
       const runOut = burn > 0
         ? new Date(Date.now() + days * 86400000)
-            .toLocaleDateString(dateLocale, { month:'short', year:'numeric' })
+            .toLocaleDateString('en', { month:'short', year:'numeric' })
         : '—';
-
-      const badgeName = currentLang === 'zh' ? badge.nameZh : badge.name;
-      const badgeDesc = currentLang === 'zh' ? badge.descZh : badge.desc;
-
+ 
       document.getElementById('r-days').textContent =
         days >= 99999 ? '∞' : fmtN(days);
       document.getElementById('r-days').style.color = badge.color;
       document.getElementById('r-months').textContent =
         months >= 99999 ? '∞' : months.toFixed(1);
-      document.getElementById('r-burn').textContent   = fmt(burn);
-      document.getElementById('r-date').textContent   = runOut;
-      document.getElementById('r-status').textContent = badgeName;
-      document.getElementById('b-emoji').textContent  = badge.emoji;
-      document.getElementById('b-name').textContent   = badgeName;
-      document.getElementById('b-desc').textContent   = badgeDesc;
-      document.getElementById('r-pct').textContent    = badge.pct + '%';
-
+      document.getElementById('r-burn').textContent  = fmt(burn);
+      document.getElementById('r-date').textContent  = runOut;
+      document.getElementById('r-status').textContent = badge.name;
+      document.getElementById('b-emoji').textContent = badge.emoji;
+      document.getElementById('b-name').textContent  = badge.name;
+      document.getElementById('b-desc').textContent  = badge.desc;
+      document.getElementById('r-pct').textContent   = badge.pct + '%';
+ 
       go('s-input', 's-result');
-
+ 
+      // input_completed + result_shown
       _e('input_completed', { days, badge: badge.name, burn: Math.round(burn) });
       _e('result_shown',    { days, badge: badge.name });
     }
-
-    function doShare() {
+ 
+    async function doShare() {
       const days  = document.getElementById('r-days').textContent;
       const badge = document.getElementById('b-name').textContent;
-      const text  = i18n[currentLang].shareText(days, badge);
-
+      const emoji = document.getElementById('b-emoji').textContent;
+      const desc  = document.getElementById('b-desc').textContent;
+      const pct   = document.getElementById('r-pct').textContent;
+      const color = document.getElementById('r-days').style.color || '#8FDDAA';
+ 
       _e('share_clicked', { badge, days });
+ 
+      // Update hidden share card
+      document.getElementById('sc-days').textContent  = days;
+      document.getElementById('sc-days').style.color  = color;
+      document.getElementById('sc-emoji').textContent = emoji;
+      document.getElementById('sc-name').textContent  = badge;
+      document.getElementById('sc-desc').textContent  = desc;
+      document.getElementById('sc-pct').textContent   = currentLang === 'zh' ? `我超越了 ${pct} 的人` : `I outlast ${pct} of people`;
+      document.getElementById('sc-badge-wrap').style.borderColor = color.replace(')', ',0.25)').replace('rgb', 'rgba');
+      document.getElementById('sc-badge-wrap').style.background  = color.replace(')', ',0.08)').replace('rgb', 'rgba');
 
-      if (navigator.share) {
-        navigator.share({ text });
-      } else {
-        navigator.clipboard.writeText(text)
-          .then(() => alert(i18n[currentLang].copied));
+      const text = i18n[currentLang].shareText(days, badge, emoji);
+ 
+      // Try image share first
+      try {
+        const card   = document.getElementById('share-card');
+        const canvas = await html2canvas(card, {
+          backgroundColor: '#060F1E',
+          scale: 3,
+          useCORS: true,
+          logging: false,
+        });
+ 
+        canvas.toBlob(async (blob) => {
+          if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], 'awareness.png', { type: 'image/png' })] })) {
+            await navigator.share({
+              files: [new File([blob], 'awareness.png', { type: 'image/png' })],
+              text,
+            });
+          } else if (navigator.share) {
+            // Share text only if image not supported
+            await navigator.share({ text });
+          } else {
+            // Fallback — download image
+            const url = URL.createObjectURL(blob);
+            const a   = document.createElement('a');
+            a.href    = url;
+            a.download = 'awareness.png';
+            a.click();
+            URL.revokeObjectURL(url);
+          }
+        }, 'image/png');
+      } catch(e) {
+        // Final fallback — copy text
+        console.warn('Share failed:', e);
+        if (navigator.share) {
+          navigator.share({ text });
+        } else {
+          navigator.clipboard.writeText(text)
+            .then(() => alert('Copied to clipboard!'));
+        }
       }
     }
-
+ 
     async function submitEmail() {
       const email = document.getElementById('cap-email').value.trim();
       if (!email || !email.includes('@')) return;
-
+ 
       _e('email_submitted', { email_domain: email.split('@')[1] });
-
+ 
       try {
         await _addDoc(_collection(_db, 'waitlist'), {
           email: email,
@@ -594,10 +682,14 @@
         console.log('[firestore] email saved');
       } catch(e) {
         console.error('[firestore] error', e);
+        // Fallback to localStorage
         const list = JSON.parse(localStorage.getItem('waitlist') || '[]');
         list.push({ email, ts: Date.now() });
         localStorage.setItem('waitlist', JSON.stringify(list));
       }
+ 
+      document.getElementById('cap-form').classList.add('hide');
+      document.getElementById('cap-success').classList.add('show');
     }
   </script>
 
