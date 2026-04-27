@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Awareness — How long can you survive?</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #040D1A;
+      color: #CDD5E0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.25rem;
+    }
+
+    .screen { display: none; width: 100%; max-width: 400px; }
+    .screen.active { display: flex; flex-direction: column; align-items: center; }
+
+    .logo {
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: #5B9DC4;
+      margin-bottom: 2.5rem;
+      align-self: flex-start;
+    }
+
+    /* ── LANDING ── */
+    .mock-result { text-align: center; margin-bottom: 2rem; }
+    .mock-days {
+      font-size: 96px;
+      font-weight: 700;
+      font-family: 'Courier New', monospace;
+      color: #E8829E;
+      line-height: 1;
+      letter-spacing: -2px;
+    }
+    .mock-label {
+      font-size: 12px;
+      letter-spacing: 3px;
+      color: #5B9DC4;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .mock-badge {
+      display: inline-block;
+      background: rgba(232,130,158,0.12);
+      border: 1px solid rgba(232,130,158,0.3);
+      color: #E8829E;
+      font-size: 12px;
+      letter-spacing: 1px;
+      padding: 5px 14px;
+      border-radius: 100px;
+    }
+    .headline {
+      font-size: 26px;
+      font-weight: 700;
+      color: #F0F0F5;
+      text-align: center;
+      line-height: 1.3;
+      margin-bottom: 0.75rem;
+    }
+    .subline {
+      font-size: 14px;
+      color: #6B7F96;
+      text-align: center;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    .trust {
+      font-size: 11px;
+      color: #2A3D5A;
+      margin-top: 0.75rem;
+      letter-spacing: 0.5px;
+      text-align: center;
+    }
+
+    /* ── INPUTS ── */
+    .section-title {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: #5B9DC4;
+      margin-bottom: 1.5rem;
+      align-self: flex-start;
+    }
+    .field { width: 100%; margin-bottom: 1.25rem; }
+    .field label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #6B7F96;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .field label span {
+      font-size: 15px;
+      font-weight: 600;
+      color: #CDD5E0;
+      font-family: 'Courier New', monospace;
+    }
+    input[type=range] {
+      width: 100%;
+      accent-color: #8FDDAA;
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      margin-top: 0.5rem;
+    }
+    .btn:active { opacity: 0.8; }
+    .btn-mint  { background: #8FDDAA; color: #040D1A; }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid #0D1F3A;
+      color: #6B7F96;
+    }
+
+    /* ── RESULT ── */
+    .result-hero { text-align: center; margin: 0.5rem 0 1.5rem; width: 100%; }
+    .result-days {
+      font-size: 80px;
+      font-weight: 700;
+      font-family: 'Courier New', monospace;
+      line-height: 1;
+    }
+    .result-unit {
+      font-size: 14px;
+      letter-spacing: 3px;
+      color: #6B7F96;
+      margin-top: 0.4rem;
+      margin-bottom: 1.25rem;
+    }
+    .badge-card {
+      background: #060F1E;
+      border: 1px solid #0D1F3A;
+      border-radius: 14px;
+      padding: 1.25rem;
+      width: 100%;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .badge-emoji { font-size: 32px; margin-bottom: 0.4rem; display: block; }
+    .badge-name { font-size: 18px; font-weight: 700; color: #F0F0F5; margin-bottom: 0.25rem; }
+    .badge-desc { font-size: 13px; color: #6B7F96; line-height: 1.5; }
+    .percentile {
+      font-size: 13px;
+      color: #6B7F96;
+      background: #060F1E;
+      border: 1px solid #0D1F3A;
+      border-radius: 100px;
+      padding: 7px 14px;
+      margin-bottom: 1.25rem;
+    }
+    .percentile strong { color: #CDD5E0; }
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      width: 100%;
+      margin-bottom: 1.25rem;
+    }
+    .stat {
+      background: #060F1E;
+      border: 1px solid #0D1F3A;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+    }
+    .stat-label { font-size: 10px; letter-spacing: 1px; color: #2A3D5A; margin-bottom: 4px; }
+    .stat-val { font-size: 15px; font-weight: 600; font-family: 'Courier New', monospace; color: #CDD5E0; }
+
+    /* ── EMAIL CAPTURE (post-result) ── */
+    .capture-card {
+      background: #060F1E;
+      border: 1px solid rgba(143,221,170,0.2);
+      border-radius: 14px;
+      padding: 1.25rem;
+      width: 100%;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .capture-title { font-size: 15px; font-weight: 600; color: #F0F0F5; margin-bottom: 0.4rem; }
+    .capture-sub { font-size: 12px; color: #6B7F96; margin-bottom: 1rem; line-height: 1.5; }
+    .email-row { display: flex; gap: 8px; }
+    .email-input {
+      flex: 1;
+      padding: 11px 14px;
+      background: #08172E;
+      border: 1px solid #0D1F3A;
+      border-radius: 10px;
+      color: #CDD5E0;
+      font-size: 14px;
+      outline: none;
+    }
+    .email-input:focus { border-color: #8FDDAA; }
+    .email-input::placeholder { color: #2A3D5A; }
+    .email-btn {
+      padding: 11px 18px;
+      background: #8FDDAA;
+      color: #040D1A;
+      border: none;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .capture-success {
+      font-size: 13px;
+      color: #8FDDAA;
+      display: none;
+    }
+    .capture-success.show { display: block; }
+    .capture-form.hide { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- ── SCREEN 1: LANDING ── -->
+  <div class="screen active" id="s-land">
+    <div class="logo">◈ AWARENESS</div>
+
+    <div class="mock-result">
+      <div class="mock-days">73</div>
+      <div class="mock-label">DAYS LEFT</div>
+      <div class="mock-badge">FINANCIAL ROOKIE 🐣</div>
+    </div>
+
+    <div class="headline">How many days can you survive financially?</div>
+    <div class="subline">Find out in 10 seconds.<br>No signup required.</div>
+
+    <button class="btn btn-mint" onclick="go('s-land','s-input'); _e('cta_clicked')">
+      TRY IT NOW
+    </button>
+    <div class="trust">NO ACCOUNT &nbsp;·&nbsp; NO DATA STORED &nbsp;·&nbsp; FREE</div>
+  </div>
+
+
+  <!-- ── SCREEN 2: INPUTS ── -->
+  <div class="screen" id="s-input">
+    <div class="logo">◈ AWARENESS</div>
+    <div class="section-title">YOUR FINANCES</div>
+
+    <div class="field">
+      <label>CASH SAVINGS <span id="v-cash">$500,000</span></label>
+      <input type="range" id="cash" min="0" max="5000000" step="50000" value="500000"
+        oninput="fv('cash','v-cash')">
+    </div>
+
+    <div class="field">
+      <label>MONTHLY SPENDING <span id="v-spend">$50,000</span></label>
+      <input type="range" id="spend" min="0" max="300000" step="5000" value="50000"
+        oninput="fv('spend','v-spend')">
+    </div>
+
+    <div class="field">
+      <label>MONTHLY DEBT <span id="v-debt">$0</span></label>
+      <input type="range" id="debt" min="0" max="100000" step="1000" value="0"
+        oninput="fv('debt','v-debt')">
+    </div>
+
+    <div class="field">
+      <label>SUBSCRIPTIONS/MO <span id="v-subs">$1,000</span></label>
+      <input type="range" id="subs" min="0" max="20000" step="500" value="1000"
+        oninput="fv('subs','v-subs')">
+    </div>
+
+    <button class="btn btn-mint" onclick="calcAndShow()">SEE MY RUNWAY</button>
+    <button class="btn btn-ghost" style="margin-top:0.5rem" onclick="go('s-input','s-land')">BACK</button>
+  </div>
+
+
+  <!-- ── SCREEN 3: RESULT ── -->
+  <div class="screen" id="s-result">
+    <div class="logo">◈ AWARENESS</div>
+
+    <div class="result-hero">
+      <div class="result-days" id="r-days" style="color:#8FDDAA">0</div>
+      <div class="result-unit">DAYS LEFT</div>
+
+      <div class="badge-card">
+        <span class="badge-emoji" id="b-emoji">🐣</span>
+        <div class="badge-name" id="b-name">Financial Rookie</div>
+        <div class="badge-desc" id="b-desc">You're just getting started.</div>
+      </div>
+
+      <div class="percentile">
+        You outlast <strong id="r-pct">0%</strong> of people
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-label">MONTHLY BURN</div>
+        <div class="stat-val" id="r-burn">$0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">MONTHS LEFT</div>
+        <div class="stat-val" id="r-months">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">RUN OUT DATE</div>
+        <div class="stat-val" id="r-date">—</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">SURVIVAL STATUS</div>
+        <div class="stat-val" id="r-status">—</div>
+      </div>
+    </div>
+
+    <!-- Email capture — shown AFTER they see the result -->
+    <div class="capture-card">
+      <div class="capture-title">Want the full app?</div>
+      <div class="capture-sub">Track your runway daily. Launching soon — get early access.</div>
+      <div class="capture-form" id="cap-form">
+        <div class="email-row">
+          <input class="email-input" type="email" id="cap-email" placeholder="your@email.com">
+          <button class="email-btn" onclick="submitEmail()">NOTIFY ME</button>
+        </div>
+      </div>
+      <div class="capture-success" id="cap-success">You're on the list. We'll reach out soon.</div>
+    </div>
+
+    <button class="btn btn-mint" onclick="doShare()">SHARE MY RESULT</button>
+    <button class="btn btn-ghost" onclick="go('s-result','s-input')">RECALCULATE</button>
+  </div>
+
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp }   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getAnalytics, logEvent } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js';
+    import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    const app = initializeApp({
+      apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,
+      authDomain:        import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+      projectId:         import.meta.env.VITE_FIREBASE_PROJECT_ID,
+      storageBucket:     import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+      appId:             import.meta.env.VITE_FIREBASE_APP_ID,
+      measurementId:     import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+    });
+
+    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+
+    // page_view fires on load
+    logEvent(analytics, 'page_view');
+
+    // Expose globally so plain <script> can call it
+    window._e = (name, params) => {
+      logEvent(analytics, name, params || {});
+      console.log('[analytics]', name, params || {});
+    };
+    window._db = db;
+    window._collection = collection;
+    window._addDoc = addDoc;
+    window._serverTimestamp = serverTimestamp;
+  </script>
+
+  <script>
+    // Fallback before Firebase loads
+    if (!window._e) window._e = (n,p) => console.log('[analytics]', n, p);
+ 
+    const badges = [
+      { max: 30,    emoji:'🔴', name:'Survival Mode',      desc:'Every day counts. Time to act.',      pct:5,  color:'#E8829E' },
+      { max: 90,    emoji:'🐣', name:'Financial Rookie',   desc:"You're just getting started.",         pct:20, color:'#E8829E' },
+      { max: 180,   emoji:'🌊', name:'Getting By',         desc:'Staying afloat, but barely.',          pct:40, color:'#CB9A3E' },
+      { max: 365,   emoji:'🌿', name:'Financially Stable', desc:'You have breathing room.',             pct:65, color:'#8FDDAA' },
+      { max: 730,   emoji:'🏰', name:'Financial Fortress', desc:'Strong position. Well done.',          pct:85, color:'#8FDDAA' },
+      { max: 99999, emoji:'🚀', name:'Escape Velocity',    desc:"You've cracked the code.",             pct:97, color:'#8FDDAA' },
+    ];
+ 
+    const fmt    = n => '$' + Math.round(n).toLocaleString();
+    const fmtN   = n => Math.round(n).toLocaleString();
+ 
+    function go(from, to) {
+      document.getElementById(from).classList.remove('active');
+      document.getElementById(to).classList.add('active');
+    }
+ 
+    function fv(sliderId, labelId) {
+      document.getElementById(labelId).textContent =
+        fmt(document.getElementById(sliderId).value);
+    }
+ 
+    function calcAndShow() {
+      const cash  = +document.getElementById('cash').value;
+      const spend = +document.getElementById('spend').value;
+      const debt  = +document.getElementById('debt').value;
+      const subs  = +document.getElementById('subs').value;
+      const burn  = spend + debt + subs;
+      const days  = burn > 0 ? Math.floor((cash / burn) * 30) : 99999;
+      const months = burn > 0 ? (cash / burn) : 99999;
+      const badge = badges.find(b => days < b.max) || badges[0];
+ 
+      // Run out date
+      const runOut = burn > 0
+        ? new Date(Date.now() + days * 86400000)
+            .toLocaleDateString('en', { month:'short', year:'numeric' })
+        : '—';
+ 
+      document.getElementById('r-days').textContent =
+        days >= 99999 ? '∞' : fmtN(days);
+      document.getElementById('r-days').style.color = badge.color;
+      document.getElementById('r-months').textContent =
+        months >= 99999 ? '∞' : months.toFixed(1);
+      document.getElementById('r-burn').textContent  = fmt(burn);
+      document.getElementById('r-date').textContent  = runOut;
+      document.getElementById('r-status').textContent = badge.name;
+      document.getElementById('b-emoji').textContent = badge.emoji;
+      document.getElementById('b-name').textContent  = badge.name;
+      document.getElementById('b-desc').textContent  = badge.desc;
+      document.getElementById('r-pct').textContent   = badge.pct + '%';
+ 
+      go('s-input', 's-result');
+ 
+      // input_completed + result_shown
+      _e('input_completed', { days, badge: badge.name, burn: Math.round(burn) });
+      _e('result_shown',    { days, badge: badge.name });
+    }
+ 
+    function doShare() {
+      const days  = document.getElementById('r-days').textContent;
+      const badge = document.getElementById('b-name').textContent;
+      const text  = `I have ${days} days of financial runway — "${badge}". How long can you survive? → awareness.app`;
+ 
+      _e('share_clicked', { badge, days });
+ 
+      if (navigator.share) {
+        navigator.share({ text });
+      } else {
+        navigator.clipboard.writeText(text)
+          .then(() => alert('Copied to clipboard!'));
+      }
+    }
+ 
+  async function submitEmail() {
+      const email = document.getElementById('cap-email').value.trim();
+      if (!email || !email.includes('@')) return;
+ 
+      _e('email_submitted', { email_domain: email.split('@')[1] });
+ 
+      try {
+        await _addDoc(_collection(_db, 'waitlist'), {
+          email: email,
+          badge: document.getElementById('b-name').textContent,
+          days:  document.getElementById('r-days').textContent,
+          ts:    _serverTimestamp(),
+          ua:    navigator.userAgent.substring(0, 100),
+        });
+        console.log('[firestore] email saved');
+      } catch(e) {
+        console.error('[firestore] error', e);
+        // Fallback to localStorage
+        const list = JSON.parse(localStorage.getItem('waitlist') || '[]');
+        list.push({ email, ts: Date.now() });
+        localStorage.setItem('waitlist', JSON.stringify(list));
+      }}
+  </script>
+
+</body>
+</html>
