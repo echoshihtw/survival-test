@@ -30,6 +30,23 @@
       align-self: flex-start;
     }
 
+    /* ── LANG TOGGLE ── */
+    .lang-toggle {
+      position: fixed;
+      top: 1rem;
+      right: 1.25rem;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: #2A3D5A;
+      cursor: pointer;
+      background: none;
+      border: 1px solid #0D1F3A;
+      border-radius: 100px;
+      padding: 4px 10px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .lang-toggle:hover { color: #5B9DC4; border-color: #5B9DC4; }
+
     /* ── LANDING ── */
     .mock-result { text-align: center; margin-bottom: 2rem; }
     .mock-days {
@@ -102,6 +119,12 @@
       font-weight: 600;
       color: #CDD5E0;
       font-family: 'Courier New', monospace;
+    }
+    .field label .field-label {
+      font-size: 12px;
+      font-weight: normal;
+      color: #6B7F96;
+      font-family: inherit;
     }
     input[type=range] {
       width: 100%;
@@ -229,57 +252,59 @@
 </head>
 <body>
 
+  <button class="lang-toggle" id="lang-btn" onclick="toggleLang()">中文</button>
+
   <!-- ── SCREEN 1: LANDING ── -->
   <div class="screen active" id="s-land">
     <div class="logo">◈ AWARENESS</div>
 
     <div class="mock-result">
       <div class="mock-days">73</div>
-      <div class="mock-label">DAYS LEFT</div>
-      <div class="mock-badge">FINANCIAL ROOKIE 🐣</div>
+      <div class="mock-label" data-i18n="mock-label">DAYS LEFT</div>
+      <div class="mock-badge" data-i18n="mock-badge">FINANCIAL ROOKIE 🐣</div>
     </div>
 
-    <div class="headline">How many days can you survive financially?</div>
-    <div class="subline">Find out in 10 seconds.<br>No signup required.</div>
+    <div class="headline" data-i18n="headline">If your income stopped today, how long could you live on your savings?</div>
+    <div class="subline" data-i18n="subline">Enter your savings and find out in seconds.<br>No signup required.</div>
 
-    <button class="btn btn-mint" onclick="go('s-land','s-input'); _e('cta_clicked')">
-      TRY IT NOW
+    <button class="btn btn-mint" onclick="go('s-land','s-input'); _e('cta_clicked')" data-i18n="cta">
+      CALCULATE MY SURVIVAL
     </button>
-    <div class="trust">NO ACCOUNT &nbsp;·&nbsp; NO DATA STORED &nbsp;·&nbsp; FREE</div>
+    <div class="trust" data-i18n="trust">NO JUDGMENT &nbsp;·&nbsp; NO DATA STORED &nbsp;·&nbsp; FREE</div>
   </div>
 
 
   <!-- ── SCREEN 2: INPUTS ── -->
   <div class="screen" id="s-input">
     <div class="logo">◈ AWARENESS</div>
-    <div class="section-title">YOUR FINANCES</div>
+    <div class="section-title" data-i18n="section-title">YOUR FINANCES</div>
 
     <div class="field">
-      <label>CASH SAVINGS <span id="v-cash">$500,000</span></label>
+      <label><span class="field-label" data-i18n="label-cash">MY SAVINGS</span> <span id="v-cash">$500,000</span></label>
       <input type="range" id="cash" min="0" max="5000000" step="50000" value="500000"
         oninput="fv('cash','v-cash')">
     </div>
 
     <div class="field">
-      <label>MONTHLY SPENDING <span id="v-spend">$50,000</span></label>
+      <label><span class="field-label" data-i18n="label-spend">MONTHLY SPENDING</span> <span id="v-spend">$50,000</span></label>
       <input type="range" id="spend" min="0" max="300000" step="5000" value="50000"
         oninput="fv('spend','v-spend')">
     </div>
 
     <div class="field">
-      <label>MONTHLY DEBT <span id="v-debt">$0</span></label>
+      <label><span class="field-label" data-i18n="label-debt">MONTHLY DEBT</span> <span id="v-debt">$0</span></label>
       <input type="range" id="debt" min="0" max="100000" step="1000" value="0"
         oninput="fv('debt','v-debt')">
     </div>
 
     <div class="field">
-      <label>SUBSCRIPTIONS/MO <span id="v-subs">$1,000</span></label>
+      <label><span class="field-label" data-i18n="label-subs">SUBSCRIPTIONS/MO</span> <span id="v-subs">$1,000</span></label>
       <input type="range" id="subs" min="0" max="20000" step="500" value="1000"
         oninput="fv('subs','v-subs')">
     </div>
 
-    <button class="btn btn-mint" onclick="calcAndShow()">SEE MY RUNWAY</button>
-    <button class="btn btn-ghost" style="margin-top:0.5rem" onclick="go('s-input','s-land')">BACK</button>
+    <button class="btn btn-mint" onclick="calcAndShow()" data-i18n="btn-calc">SEE MY RUNWAY</button>
+    <button class="btn btn-ghost" style="margin-top:0.5rem" onclick="go('s-input','s-land')" data-i18n="btn-back">BACK</button>
   </div>
 
 
@@ -289,7 +314,7 @@
 
     <div class="result-hero">
       <div class="result-days" id="r-days" style="color:#8FDDAA">0</div>
-      <div class="result-unit">DAYS LEFT</div>
+      <div class="result-unit" data-i18n="result-unit">DAYS LEFT</div>
 
       <div class="badge-card">
         <span class="badge-emoji" id="b-emoji">🐣</span>
@@ -298,44 +323,44 @@
       </div>
 
       <div class="percentile">
-        You outlast <strong id="r-pct">0%</strong> of people
+        <span data-i18n="pct-pre">You outlast </span><strong id="r-pct">0%</strong><span data-i18n="pct-post"> of people</span>
       </div>
     </div>
 
     <div class="stats">
       <div class="stat">
-        <div class="stat-label">MONTHLY BURN</div>
+        <div class="stat-label" data-i18n="stat-burn">MONTHLY BURN</div>
         <div class="stat-val" id="r-burn">$0</div>
       </div>
       <div class="stat">
-        <div class="stat-label">MONTHS LEFT</div>
+        <div class="stat-label" data-i18n="stat-months">MONTHS LEFT</div>
         <div class="stat-val" id="r-months">0</div>
       </div>
       <div class="stat">
-        <div class="stat-label">RUN OUT DATE</div>
+        <div class="stat-label" data-i18n="stat-date">RUN OUT DATE</div>
         <div class="stat-val" id="r-date">—</div>
       </div>
       <div class="stat">
-        <div class="stat-label">SURVIVAL STATUS</div>
+        <div class="stat-label" data-i18n="stat-status">SURVIVAL STATUS</div>
         <div class="stat-val" id="r-status">—</div>
       </div>
     </div>
 
     <!-- Email capture — shown AFTER they see the result -->
     <div class="capture-card">
-      <div class="capture-title">Want the full app?</div>
-      <div class="capture-sub">Track your runway daily. Launching soon — get early access.</div>
+      <div class="capture-title" data-i18n="capture-title">Want the full app?</div>
+      <div class="capture-sub" data-i18n="capture-sub">Track your runway daily. Launching soon — get early access.</div>
       <div class="capture-form" id="cap-form">
         <div class="email-row">
-          <input class="email-input" type="email" id="cap-email" placeholder="your@email.com">
-          <button class="email-btn" onclick="submitEmail()">NOTIFY ME</button>
+          <input class="email-input" type="email" id="cap-email" placeholder="your@email.com" data-i18n-placeholder="email-placeholder">
+          <button class="email-btn" onclick="submitEmail()" data-i18n="btn-notify">NOTIFY ME</button>
         </div>
       </div>
-      <div class="capture-success" id="cap-success">You're on the list. We'll reach out soon.</div>
+      <div class="capture-success" id="cap-success" data-i18n="cap-success">You're on the list. We'll reach out soon.</div>
     </div>
 
-    <button class="btn btn-mint" onclick="doShare()">SHARE MY RESULT</button>
-    <button class="btn btn-ghost" onclick="go('s-result','s-input')">RECALCULATE</button>
+    <button class="btn btn-mint" onclick="doShare()" data-i18n="btn-share">SHARE MY RESULT</button>
+    <button class="btn btn-ghost" onclick="go('s-result','s-input')" data-i18n="btn-recalc">RECALCULATE</button>
   </div>
 
 
@@ -375,86 +400,189 @@
   <script>
     // Fallback before Firebase loads
     if (!window._e) window._e = (n,p) => console.log('[analytics]', n, p);
- 
+
+    // ── i18n ──
+    const i18n = {
+      en: {
+        title:           'Awareness — How long can you survive?',
+        'mock-label':    'DAYS LEFT',
+        'mock-badge':    'FINANCIAL ROOKIE 🐣',
+        headline:        'If your income stopped today, how long could you live on your savings?',
+        subline:         'Enter your savings and find out in seconds.<br>No signup required.',
+        cta:             'CALCULATE MY SURVIVAL',
+        trust:           'NO JUDGMENT &nbsp;·&nbsp; NO DATA STORED &nbsp;·&nbsp; FREE',
+        'section-title': 'YOUR FINANCES',
+        'label-cash':    'MY SAVINGS',
+        'label-spend':   'MONTHLY SPENDING',
+        'label-debt':    'MONTHLY DEBT',
+        'label-subs':    'SUBSCRIPTIONS/MO',
+        'btn-calc':      'SEE MY RUNWAY',
+        'btn-back':      'BACK',
+        'result-unit':   'DAYS LEFT',
+        'pct-pre':       'You outlast ',
+        'pct-post':      ' of people',
+        'stat-burn':     'MONTHLY BURN',
+        'stat-months':   'MONTHS LEFT',
+        'stat-date':     'RUN OUT DATE',
+        'stat-status':   'SURVIVAL STATUS',
+        'capture-title': 'Want the full app?',
+        'capture-sub':   'Track your runway daily. Launching soon — get early access.',
+        'email-placeholder': 'your@email.com',
+        'btn-notify':    'NOTIFY ME',
+        'cap-success':   "You're on the list. We'll reach out soon.",
+        'btn-share':     'SHARE MY RESULT',
+        'btn-recalc':    'RECALCULATE',
+        shareText:       (days, badge) => `I have ${days} days of financial runway — "${badge}". How long can you survive? → awareness.app`,
+        copied:          'Copied to clipboard!',
+        dateLocale:      'en',
+      },
+      zh: {
+        title:           'Awareness — 你的存款能撐多久？',
+        'mock-label':    '剩餘天數',
+        'mock-badge':    '財務新手 🐣',
+        headline:        '如果今天收入中斷，你的存款能撐多久？',
+        subline:         '輸入你的存款，幾秒內找出答案。<br>無需註冊。',
+        cta:             '計算我的生存天數',
+        trust:           '不評判 &nbsp;·&nbsp; 不儲存資料 &nbsp;·&nbsp; 完全免費',
+        'section-title': '你的財務狀況',
+        'label-cash':    '我的存款',
+        'label-spend':   '每月支出',
+        'label-debt':    '每月債務',
+        'label-subs':    '每月訂閱費',
+        'btn-calc':      '查看我的生存期限',
+        'btn-back':      '返回',
+        'result-unit':   '剩餘天數',
+        'pct-pre':       '你超越了 ',
+        'pct-post':      ' 的人',
+        'stat-burn':     '每月消耗',
+        'stat-months':   '剩餘月數',
+        'stat-date':     '耗盡日期',
+        'stat-status':   '生存狀態',
+        'capture-title': '想要完整應用程式？',
+        'capture-sub':   '每天追蹤你的生存期限。即將推出，搶先體驗。',
+        'email-placeholder': '你的電子郵件',
+        'btn-notify':    '通知我',
+        'cap-success':   '你已加入名單，我們將盡快與你聯繫。',
+        'btn-share':     '分享我的結果',
+        'btn-recalc':    '重新計算',
+        shareText:       (days, badge) => `我有 ${days} 天的財務生存期 —「${badge}」。你能撐多久？→ awareness.app`,
+        copied:          '已複製到剪貼板！',
+        dateLocale:      'zh-TW',
+      },
+    };
+
+    let currentLang = (() => {
+      const saved = localStorage.getItem('lang');
+      if (saved && i18n[saved]) return saved;
+      const langs = (navigator.languages || [navigator.language]).map(l => l.toLowerCase());
+      return langs.some(l => l.startsWith('zh')) ? 'zh' : 'en';
+    })();
+
+    function applyLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('lang', lang);
+      document.documentElement.lang = lang === 'zh' ? 'zh-TW' : 'en';
+      const t = i18n[lang];
+      document.title = t.title;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (key in t) el.innerHTML = t[key];
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.dataset.i18nPlaceholder;
+        if (key in t) el.placeholder = t[key];
+      });
+      document.getElementById('lang-btn').textContent = lang === 'zh' ? 'EN' : '中文';
+    }
+
+    function toggleLang() {
+      applyLang(currentLang === 'en' ? 'zh' : 'en');
+    }
+
+    // Apply on load
+    applyLang(currentLang);
+
     const badges = [
-      { max: 30,    emoji:'🔴', name:'Survival Mode',      desc:'Every day counts. Time to act.',      pct:5,  color:'#E8829E' },
-      { max: 90,    emoji:'🐣', name:'Financial Rookie',   desc:"You're just getting started.",         pct:20, color:'#E8829E' },
-      { max: 180,   emoji:'🌊', name:'Getting By',         desc:'Staying afloat, but barely.',          pct:40, color:'#CB9A3E' },
-      { max: 365,   emoji:'🌿', name:'Financially Stable', desc:'You have breathing room.',             pct:65, color:'#8FDDAA' },
-      { max: 730,   emoji:'🏰', name:'Financial Fortress', desc:'Strong position. Well done.',          pct:85, color:'#8FDDAA' },
-      { max: 99999, emoji:'🚀', name:'Escape Velocity',    desc:"You've cracked the code.",             pct:97, color:'#8FDDAA' },
+      { max: 30,    emoji:'🔴', name:'Survival Mode',      nameZh:'生存模式', desc:'Every day counts. Time to act.',      descZh:'每一天都很重要，是時候行動了。', pct:5,  color:'#E8829E' },
+      { max: 90,    emoji:'🐣', name:'Financial Rookie',   nameZh:'財務新手', desc:"You're just getting started.",         descZh:'你才剛剛起步。',               pct:20, color:'#E8829E' },
+      { max: 180,   emoji:'🌊', name:'Getting By',         nameZh:'勉強度日', desc:'Staying afloat, but barely.',          descZh:'勉強維持，但差強人意。',       pct:40, color:'#CB9A3E' },
+      { max: 365,   emoji:'🌿', name:'Financially Stable', nameZh:'財務穩定', desc:'You have breathing room.',             descZh:'你有一些緩衝空間。',           pct:65, color:'#8FDDAA' },
+      { max: 730,   emoji:'🏰', name:'Financial Fortress', nameZh:'財務堡壘', desc:'Strong position. Well done.',          descZh:'強勢地位，幹得好。',           pct:85, color:'#8FDDAA' },
+      { max: 99999, emoji:'🚀', name:'Escape Velocity',    nameZh:'財務自由', desc:"You've cracked the code.",             descZh:'你已突破財務限制。',           pct:97, color:'#8FDDAA' },
     ];
- 
-    const fmt    = n => '$' + Math.round(n).toLocaleString();
-    const fmtN   = n => Math.round(n).toLocaleString();
- 
+
+    const fmt  = n => '$' + Math.round(n).toLocaleString();
+    const fmtN = n => Math.round(n).toLocaleString();
+
     function go(from, to) {
       document.getElementById(from).classList.remove('active');
       document.getElementById(to).classList.add('active');
     }
- 
+
     function fv(sliderId, labelId) {
       document.getElementById(labelId).textContent =
         fmt(document.getElementById(sliderId).value);
     }
- 
+
     function calcAndShow() {
-      const cash  = +document.getElementById('cash').value;
-      const spend = +document.getElementById('spend').value;
-      const debt  = +document.getElementById('debt').value;
-      const subs  = +document.getElementById('subs').value;
-      const burn  = spend + debt + subs;
-      const days  = burn > 0 ? Math.floor((cash / burn) * 30) : 99999;
+      const cash   = +document.getElementById('cash').value;
+      const spend  = +document.getElementById('spend').value;
+      const debt   = +document.getElementById('debt').value;
+      const subs   = +document.getElementById('subs').value;
+      const burn   = spend + debt + subs;
+      const days   = burn > 0 ? Math.floor((cash / burn) * 30) : 99999;
       const months = burn > 0 ? (cash / burn) : 99999;
-      const badge = badges.find(b => days < b.max) || badges[0];
- 
-      // Run out date
+      const badge  = badges.find(b => days < b.max) || badges[0];
+
+      const dateLocale = i18n[currentLang].dateLocale;
       const runOut = burn > 0
         ? new Date(Date.now() + days * 86400000)
-            .toLocaleDateString('en', { month:'short', year:'numeric' })
+            .toLocaleDateString(dateLocale, { month:'short', year:'numeric' })
         : '—';
- 
+
+      const badgeName = currentLang === 'zh' ? badge.nameZh : badge.name;
+      const badgeDesc = currentLang === 'zh' ? badge.descZh : badge.desc;
+
       document.getElementById('r-days').textContent =
         days >= 99999 ? '∞' : fmtN(days);
       document.getElementById('r-days').style.color = badge.color;
       document.getElementById('r-months').textContent =
         months >= 99999 ? '∞' : months.toFixed(1);
-      document.getElementById('r-burn').textContent  = fmt(burn);
-      document.getElementById('r-date').textContent  = runOut;
-      document.getElementById('r-status').textContent = badge.name;
-      document.getElementById('b-emoji').textContent = badge.emoji;
-      document.getElementById('b-name').textContent  = badge.name;
-      document.getElementById('b-desc').textContent  = badge.desc;
-      document.getElementById('r-pct').textContent   = badge.pct + '%';
- 
+      document.getElementById('r-burn').textContent   = fmt(burn);
+      document.getElementById('r-date').textContent   = runOut;
+      document.getElementById('r-status').textContent = badgeName;
+      document.getElementById('b-emoji').textContent  = badge.emoji;
+      document.getElementById('b-name').textContent   = badgeName;
+      document.getElementById('b-desc').textContent   = badgeDesc;
+      document.getElementById('r-pct').textContent    = badge.pct + '%';
+
       go('s-input', 's-result');
- 
-      // input_completed + result_shown
+
       _e('input_completed', { days, badge: badge.name, burn: Math.round(burn) });
       _e('result_shown',    { days, badge: badge.name });
     }
- 
+
     function doShare() {
       const days  = document.getElementById('r-days').textContent;
       const badge = document.getElementById('b-name').textContent;
-      const text  = `I have ${days} days of financial runway — "${badge}". How long can you survive? → awareness.app`;
- 
+      const text  = i18n[currentLang].shareText(days, badge);
+
       _e('share_clicked', { badge, days });
- 
+
       if (navigator.share) {
         navigator.share({ text });
       } else {
         navigator.clipboard.writeText(text)
-          .then(() => alert('Copied to clipboard!'));
+          .then(() => alert(i18n[currentLang].copied));
       }
     }
- 
-  async function submitEmail() {
+
+    async function submitEmail() {
       const email = document.getElementById('cap-email').value.trim();
       if (!email || !email.includes('@')) return;
- 
+
       _e('email_submitted', { email_domain: email.split('@')[1] });
- 
+
       try {
         await _addDoc(_collection(_db, 'waitlist'), {
           email: email,
@@ -466,11 +594,11 @@
         console.log('[firestore] email saved');
       } catch(e) {
         console.error('[firestore] error', e);
-        // Fallback to localStorage
         const list = JSON.parse(localStorage.getItem('waitlist') || '[]');
         list.push({ email, ts: Date.now() });
         localStorage.setItem('waitlist', JSON.stringify(list));
-      }}
+      }
+    }
   </script>
 
 </body>
