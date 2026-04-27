@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Awareness — How long can you survive?</title>
+  <title>RUNWAY — How long could you last?</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -166,6 +166,11 @@
       letter-spacing: 3px;
       color: #6B7F96;
       margin-top: 0.4rem;
+      margin-bottom: 0.35rem;
+    }
+    .result-context {
+      font-size: 13px;
+      color: #6B7F96;
       margin-bottom: 1.25rem;
     }
     .badge-card {
@@ -259,51 +264,39 @@
 
   <!-- ── SCREEN 1: LANDING ── -->
   <div class="screen active" id="s-land">
-    <div class="logo">◈ AWARENESS</div>
+    <div class="logo">◈ RUNWAY</div>
 
     <div class="mock-result">
       <div class="mock-days">73</div>
-      <div class="mock-label" data-i18n="mock-label">DAYS LEFT</div>
-      <div class="mock-badge" data-i18n="mock-badge">FINANCIAL ROOKIE 🐣</div>
+      <div class="mock-label" data-i18n="mock-label">DAYS</div>
+      <div class="mock-badge" data-i18n="mock-badge">FINANCIAL ROOKIE</div>
     </div>
 
-    <div class="headline" data-i18n="headline">If your income stopped today, how long could you live on your savings?</div>
-    <div class="subline" data-i18n="subline">Enter your savings and find out in seconds.<br>No signup required.</div>
+    <div class="headline" data-i18n="headline">If your income paused today, how long could you last?</div>
+    <div class="subline" data-i18n="subline">Enter your savings and monthly expenses. See your runway in seconds.</div>
 
     <button class="btn btn-mint" onclick="go('s-land','s-input'); _e('cta_clicked')" data-i18n="cta">
-      CALCULATE MY SURVIVAL
+      FIND MY RUNWAY
     </button>
-    <div class="trust" data-i18n="trust">NO JUDGMENT &nbsp;·&nbsp; NO DATA STORED &nbsp;·&nbsp; FREE</div>
+    <div class="trust" data-i18n="trust">ONE NUMBER. A CLEARER SENSE OF WHERE YOU STAND.</div>
   </div>
 
 
   <!-- ── SCREEN 2: INPUTS ── -->
   <div class="screen" id="s-input">
-    <div class="logo">◈ AWARENESS</div>
-    <div class="section-title" data-i18n="section-title">YOUR FINANCES</div>
+    <div class="logo">◈ RUNWAY</div>
+    <div class="section-title" data-i18n="section-title">YOUR SAVINGS</div>
 
     <div class="field">
-      <label><span class="field-label" data-i18n="label-cash">MY SAVINGS</span> <span id="v-cash">$500,000</span></label>
+      <label><span class="field-label" data-i18n="label-cash">YOUR SAVINGS</span> <span id="v-cash">$500,000</span></label>
       <input type="range" id="cash" min="0" max="5000000" step="50000" value="500000"
         oninput="fv('cash','v-cash')">
     </div>
 
     <div class="field">
-      <label><span class="field-label" data-i18n="label-spend">MONTHLY SPENDING</span> <span id="v-spend">$50,000</span></label>
-      <input type="range" id="spend" min="0" max="300000" step="5000" value="50000"
-        oninput="fv('spend','v-spend')">
-    </div>
-
-    <div class="field">
-      <label><span class="field-label" data-i18n="label-debt">MONTHLY DEBT</span> <span id="v-debt">$0</span></label>
-      <input type="range" id="debt" min="0" max="100000" step="1000" value="0"
-        oninput="fv('debt','v-debt')">
-    </div>
-
-    <div class="field">
-      <label><span class="field-label" data-i18n="label-subs">SUBSCRIPTIONS/MO</span> <span id="v-subs">$1,000</span></label>
-      <input type="range" id="subs" min="0" max="20000" step="500" value="1000"
-        oninput="fv('subs','v-subs')">
+      <label><span class="field-label" data-i18n="label-expenses">MONTHLY EXPENSES</span> <span id="v-expenses">$50,000</span></label>
+      <input type="range" id="expenses" min="0" max="300000" step="5000" value="50000"
+        oninput="fv('expenses','v-expenses')">
     </div>
 
     <button class="btn btn-mint" onclick="calcAndShow()" data-i18n="btn-calc">SEE MY RUNWAY</button>
@@ -313,14 +306,15 @@
 
   <!-- ── SCREEN 3: RESULT ── -->
   <div class="screen" id="s-result">
-    <div class="logo">◈ AWARENESS</div>
+    <div class="logo">◈ RUNWAY</div>
 
     <div class="result-hero">
       <div class="result-days" id="r-days" style="color:#8FDDAA">0</div>
-      <div class="result-unit" data-i18n="result-unit">DAYS LEFT</div>
+      <div class="result-unit" data-i18n="result-unit">DAYS</div>
+      <div class="result-context" data-i18n="result-context">If your income stopped today</div>
 
       <div class="badge-card">
-        <span class="badge-emoji" id="b-emoji">🐣</span>
+        <span class="badge-emoji" id="b-emoji">◐</span>
         <div class="badge-name" id="b-name">Financial Rookie</div>
         <div class="badge-desc" id="b-desc">You're just getting started.</div>
       </div>
@@ -332,11 +326,11 @@
 
     <div class="stats">
       <div class="stat">
-        <div class="stat-label" data-i18n="stat-burn">MONTHLY BURN</div>
+        <div class="stat-label" data-i18n="stat-burn">MONTHLY BASELINE</div>
         <div class="stat-val" id="r-burn">$0</div>
       </div>
       <div class="stat">
-        <div class="stat-label" data-i18n="stat-months">MONTHS LEFT</div>
+        <div class="stat-label" data-i18n="stat-months">MONTHS</div>
         <div class="stat-val" id="r-months">0</div>
       </div>
       <div class="stat">
@@ -344,7 +338,7 @@
         <div class="stat-val" id="r-date">—</div>
       </div>
       <div class="stat">
-        <div class="stat-label" data-i18n="stat-status">SURVIVAL STATUS</div>
+        <div class="stat-label" data-i18n="stat-status">RUNWAY STATUS</div>
         <div class="stat-val" id="r-status">—</div>
       </div>
     </div>
@@ -367,42 +361,50 @@
   </div>
 
 
-  <!-- Hidden Share Card — 9:16 ratio (360×640 → 1080×1920 at scale 3) -->
+  <!-- Hidden Share Card — 9:16 story format, 1080×1920 -->
   <div id="share-card" style="
     position:fixed;left:-9999px;top:0;
-    width:360px;height:640px;
-    background:#060F1E;
+    width:1080px;height:1920px;
+    background:#050B16;
     font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     display:flex;flex-direction:column;align-items:center;
-    padding:44px 32px 40px;box-sizing:border-box;
+    padding:132px 96px 120px;box-sizing:border-box;
   ">
-    <div style="font-size:13px;color:#3A5270;letter-spacing:0.3px;text-align:center;">
-      If my income stopped today…
+    <div style="width:100%;display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-size:34px;color:#5B9DC4;letter-spacing:9px;font-weight:700;">
+        RUNWAY
+      </div>
+      <div style="font-size:28px;color:#3A5270;letter-spacing:1px;">
+        YOUR RUNWAY
+      </div>
     </div>
 
-    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;">
-      <div id="sc-days" style="font-size:100px;font-weight:700;font-family:'Courier New',monospace;line-height:1;color:#8FDDAA;">—</div>
-      <div style="font-size:11px;letter-spacing:3px;color:#3A5270;">DAYS LEFT</div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;">
+      <div style="font-size:44px;color:#6B7F96;letter-spacing:0.5px;margin-bottom:52px;">
+        If my income stopped today
+      </div>
+      <div id="sc-days" style="font-size:300px;font-weight:800;font-family:'Courier New',monospace;line-height:0.92;color:#8FDDAA;letter-spacing:-8px;">—</div>
+      <div style="font-size:34px;letter-spacing:12px;color:#3A5270;margin-top:28px;">DAYS</div>
     </div>
 
     <div id="sc-badge-wrap" style="
-      border:1px solid rgba(143,221,170,0.25);
+      border:3px solid rgba(143,221,170,0.25);
       background:rgba(143,221,170,0.08);
-      border-radius:20px;
-      padding:18px 24px;
+      border-radius:32px;
+      padding:48px 60px;
       width:100%;text-align:center;
     ">
-      <span id="sc-emoji" style="font-size:34px;display:block;margin-bottom:6px;">🐣</span>
-      <div id="sc-name" style="font-size:19px;font-weight:700;color:#F0F0F5;margin-bottom:4px;letter-spacing:-0.3px;"></div>
-      <div id="sc-desc" style="font-size:13px;color:#6B7F96;line-height:1.4;"></div>
+      <span id="sc-emoji" style="font-size:64px;display:block;margin-bottom:18px;">◐</span>
+      <div id="sc-name" style="font-size:56px;font-weight:800;color:#F0F0F5;margin-bottom:14px;letter-spacing:0;"></div>
+      <div id="sc-desc" style="font-size:34px;color:#6B7F96;line-height:1.35;"></div>
     </div>
 
-    <div style="flex:0.6;display:flex;align-items:center;">
-      <div id="sc-pct" style="font-size:14px;color:#CDD5E0;text-align:center;"></div>
+    <div style="height:220px;display:flex;align-items:center;">
+      <div id="sc-pct" style="font-size:38px;color:#CDD5E0;text-align:center;"></div>
     </div>
 
-    <div style="font-size:10px;color:#2A3D5A;letter-spacing:1.5px;text-align:center;">
-      WHAT'S YOURS?&nbsp;&nbsp;·&nbsp;&nbsp;AWARENESS.APP
+    <div style="font-size:28px;color:#3A5270;letter-spacing:5px;text-align:center;">
+      FIND YOUR RUNWAY&nbsp;&nbsp;·&nbsp;&nbsp;RUNWAY.APP
     </div>
   </div>
 
@@ -446,27 +448,26 @@
     // ── i18n ──
     const i18n = {
       en: {
-        title:           'Awareness — How long can you survive?',
-        'mock-label':    'DAYS LEFT',
-        'mock-badge':    'FINANCIAL ROOKIE 🐣',
-        headline:        'If your income stopped today, how long could you live on your savings?',
-        subline:         'Enter your savings and find out in seconds.<br>No signup required.',
-        cta:             'CALCULATE MY SURVIVAL',
-        trust:           'NO JUDGMENT &nbsp;·&nbsp; NO DATA STORED &nbsp;·&nbsp; FREE',
-        'section-title': 'YOUR FINANCES',
-        'label-cash':    'MY SAVINGS',
-        'label-spend':   'MONTHLY SPENDING',
-        'label-debt':    'MONTHLY DEBT',
-        'label-subs':    'SUBSCRIPTIONS/MO',
+        title:           'RUNWAY — How long could you last?',
+        'mock-label':    'DAYS',
+        'mock-badge':    'FINANCIAL ROOKIE',
+        headline:        'If your income paused today, how long could you last?',
+        subline:         'Enter your savings and monthly expenses. See your runway in seconds.',
+        cta:             'FIND MY RUNWAY',
+        trust:           'ONE NUMBER. A CLEARER SENSE OF WHERE YOU STAND.',
+        'section-title': 'YOUR SAVINGS',
+        'label-cash':    'YOUR SAVINGS',
+        'label-expenses': 'MONTHLY EXPENSES',
         'btn-calc':      'SEE MY RUNWAY',
         'btn-back':      'BACK',
-        'result-unit':   'DAYS LEFT',
+        'result-unit':   'DAYS',
+        'result-context': 'If your income stopped today',
         'pct-pre':       'You outlast ',
         'pct-post':      ' of people',
-        'stat-burn':     'MONTHLY BURN',
-        'stat-months':   'MONTHS LEFT',
+        'stat-burn':     'MONTHLY BASELINE',
+        'stat-months':   'MONTHS',
         'stat-date':     'RUN OUT DATE',
-        'stat-status':   'SURVIVAL STATUS',
+        'stat-status':   'RUNWAY STATUS',
         'capture-title': 'Want the full app?',
         'capture-sub':   'Track your runway daily. Launching soon — get early access.',
         'email-placeholder': 'your@email.com',
@@ -474,32 +475,31 @@
         'cap-success':   "You're on the list. We'll reach out soon.",
         'btn-share':     'SHARE MY RESULT',
         'btn-recalc':    'RECALCULATE',
-        shareText:       (days, badge, emoji) => `If my income stopped today, I'd have ${days} days. ${emoji} ${badge}. What's yours? → awareness.app`,
+        shareText:       (days, badge, emoji) => `If my income stopped today, I'd have ${days} days. ${emoji} ${badge}. What's yours? → runway.app`,
         copied:          'Copied to clipboard!',
         dateLocale:      'en',
       },
       zh: {
-        title:           'Awareness — 你的存款能撐多久？',
-        'mock-label':    '剩餘天數',
-        'mock-badge':    '財務新手 🐣',
-        headline:        '如果今天收入中斷，你的存款能撐多久？',
-        subline:         '輸入你的存款，幾秒內找出答案。<br>無需註冊。',
-        cta:             '計算我的生存天數',
-        trust:           '不評判 &nbsp;·&nbsp; 不儲存資料 &nbsp;·&nbsp; 完全免費',
-        'section-title': '你的財務狀況',
-        'label-cash':    '我的存款',
-        'label-spend':   '每月支出',
-        'label-debt':    '每月債務',
-        'label-subs':    '每月訂閱費',
-        'btn-calc':      '查看我的生存期限',
+        title:           'RUNWAY — 你的存款能撐多久？',
+        'mock-label':    '天',
+        'mock-badge':    '財務新手',
+        headline:        '如果今天收入暫停，你能撐多久？',
+        subline:         '輸入你的存款與每月支出，幾秒內看到你的 RUNWAY。',
+        cta:             '查看我的 RUNWAY',
+        trust:           '一個數字，讓你更清楚自己站在哪裡。',
+        'section-title': '你的存款',
+        'label-cash':    '你的存款',
+        'label-expenses': '每月支出',
+        'btn-calc':      '查看我的 RUNWAY',
         'btn-back':      '返回',
-        'result-unit':   '剩餘天數',
+        'result-unit':   '天',
+        'result-context': '如果今天收入中斷',
         'pct-pre':       '你超越了 ',
         'pct-post':      ' 的人',
-        'stat-burn':     '每月消耗',
-        'stat-months':   '剩餘月數',
+        'stat-burn':     '每月基準',
+        'stat-months':   '月數',
         'stat-date':     '耗盡日期',
-        'stat-status':   '生存狀態',
+        'stat-status':   'RUNWAY 狀態',
         'capture-title': '想要完整應用程式？',
         'capture-sub':   '每天追蹤你的生存期限。即將推出，搶先體驗。',
         'email-placeholder': '你的電子郵件',
@@ -507,7 +507,7 @@
         'cap-success':   '你已加入名單，我們將盡快與你聯繫。',
         'btn-share':     '分享我的結果',
         'btn-recalc':    '重新計算',
-        shareText:       (days, badge, emoji) => `如果今天收入中斷，我還有 ${days} 天。${emoji}「${badge}」。你的呢？→ awareness.app`,
+        shareText:       (days, badge, emoji) => `如果今天收入中斷，我還有 ${days} 天。${emoji}「${badge}」。你的呢？→ runway.app`,
         copied:          '已複製到剪貼板！',
         dateLocale:      'zh-TW',
       },
@@ -545,12 +545,12 @@
     applyLang(currentLang);
 
     const badges = [
-      { max: 30,    emoji:'🔴', name:'Survival Mode',      desc:'Every day counts. Time to act.',      pct:5,  color:'#E8829E' },
-      { max: 90,    emoji:'🐣', name:'Financial Rookie',   desc:"You're just getting started.",         pct:20, color:'#E8829E' },
-      { max: 180,   emoji:'🌊', name:'Getting By',         desc:'Staying afloat, but barely.',          pct:40, color:'#CB9A3E' },
-      { max: 365,   emoji:'🌿', name:'Financially Stable', desc:'You have breathing room.',             pct:65, color:'#8FDDAA' },
-      { max: 730,   emoji:'🏰', name:'Financial Fortress', desc:'Strong position. Well done.',          pct:85, color:'#8FDDAA' },
-      { max: 99999, emoji:'🚀', name:'Escape Velocity',    desc:"You've cracked the code.",             pct:97, color:'#8FDDAA' },
+      { max: 30,    emoji:'!', name:'Survival Mode',      desc:'Every day matters. Time to get clear.', pct:5,  color:'#E8829E' },
+      { max: 90,    emoji:'◐', name:'Financial Rookie',   desc:"You're just getting started.",          pct:20, color:'#E8829E' },
+      { max: 180,   emoji:'~', name:'Getting By',         desc:'You have some room, but not much.',      pct:40, color:'#CB9A3E' },
+      { max: 365,   emoji:'+', name:'Financially Stable', desc:'You have breathing room.',               pct:65, color:'#8FDDAA' },
+      { max: 730,   emoji:'#', name:'Financial Fortress', desc:'Strong cushion. Real optionality.',      pct:85, color:'#8FDDAA' },
+      { max: 99999, emoji:'^', name:'Escape Velocity',    desc:'Your runway changes the game.',          pct:97, color:'#8FDDAA' },
     ];
  
     const fmt    = n => '$' + Math.round(n).toLocaleString();
@@ -568,10 +568,7 @@
  
     function calcAndShow() {
       const cash  = +document.getElementById('cash').value;
-      const spend = +document.getElementById('spend').value;
-      const debt  = +document.getElementById('debt').value;
-      const subs  = +document.getElementById('subs').value;
-      const burn  = spend + debt + subs;
+      const burn  = +document.getElementById('expenses').value;
       const days  = burn > 0 ? Math.floor((cash / burn) * 30) : 99999;
       const months = burn > 0 ? (cash / burn) : 99999;
       const badge = badges.find(b => days < b.max) || badges[0];
@@ -628,16 +625,16 @@
       try {
         const card   = document.getElementById('share-card');
         const canvas = await html2canvas(card, {
-          backgroundColor: '#060F1E',
-          scale: 3,
+          backgroundColor: '#050B16',
+          scale: 1,
           useCORS: true,
           logging: false,
         });
  
         canvas.toBlob(async (blob) => {
-          if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], 'awareness.png', { type: 'image/png' })] })) {
+          if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], 'runway.png', { type: 'image/png' })] })) {
             await navigator.share({
-              files: [new File([blob], 'awareness.png', { type: 'image/png' })],
+              files: [new File([blob], 'runway.png', { type: 'image/png' })],
               text,
             });
           } else if (navigator.share) {
@@ -648,7 +645,7 @@
             const url = URL.createObjectURL(blob);
             const a   = document.createElement('a');
             a.href    = url;
-            a.download = 'awareness.png';
+            a.download = 'runway.png';
             a.click();
             URL.revokeObjectURL(url);
           }
